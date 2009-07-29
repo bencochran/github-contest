@@ -29,7 +29,7 @@ def loadTestUsers(infile):
 	with open(infile, 'rt') as f:
 		return [int(line.strip()) for line in f]
 
-def mostWatched(repos, n = 11):
+def mostWatched(repos, n = 12):
 	def compare_values(a, b):
 		return b[1] - a[1]
 	
