@@ -3,6 +3,8 @@
 """
 process.py
 
+You probably shouldn't even be looking here unless it's August 31st. Just sayin.
+
 Created by Ben Cochran on 2009-07-29.
 """
 
@@ -27,7 +29,7 @@ def loadTestUsers(infile):
 	with open(infile, 'rt') as f:
 		return [int(line.strip()) for line in f]
 
-def mostWatched(repos, n = 10):
+def mostWatched(repos, n = 5):
 	def compare_values(a, b):
 		return b[1] - a[1]
 	
