@@ -10,6 +10,7 @@ Created by Ben Cochran on 2009-07-29.
 
 from __future__ import with_statement
 import sys
+import pickle
 from optparse import OptionParser
 
 def loadData(infile):
@@ -50,19 +51,32 @@ def outputSuggestions(outfile, suggestions):
 			f.write("%i:%s\n" % (user,",".join(['%i'%i for i in suggestedSet])))
 
 def main():
-	p = OptionParser(usage='%prog data_file test_file output_file [options]\nRun %prog --help for more help.')
+	p = OptionParser(usage='%prog test_file output_file [options]\nRun %prog --help for more help.')
 	
 	p.add_option('-v','--verbose', action="store_true", dest="verbose", default=False, help="provide verbose output at runtime")
+	p.add_option('-d','--data_file', dest="data_filename", default=None, help="use data file")
+	p.add_option('-p','--pickle_file', dest="pickle_filename", default=None, help="use pickle file for data")
+	p.add_option('-P','--write_pickle_file', dest="write_pickle_filename", default=None, help="write inported data to pickle file")
 	
 	# Parse the arguments
 	(options, args) = p.parse_args()
 	
-	if len(args) != 3:
-		p.error("You must specify data, test, and output files")
+	if len(args) != 2:
+		p.error("You must specify test and output files")
 	
-	(data_filename, test_filename, output_filename) = args
+	(test_filename, output_filename) = args
 	
-	(usersWatched, repos) = loadData(data_filename)
+	if (options.pickle_filename):
+		with open(options.pickle_filename, 'r') as f:
+			(usersWatched, repos) = pickle.load(f)
+	elif (options.data_filename):
+		(usersWatched, repos) = loadData(options.data_filename)
+		if (options.write_pickle_filename):
+			with open(options.write_pickle_filename, 'w') as f:
+				data = (usersWatched, repos)
+				pickle.dump(data, f)
+	else:
+		p.error("You must supply either a data file or a pickle")
 	
 	testUsers = loadTestUsers(test_filename)
 	
